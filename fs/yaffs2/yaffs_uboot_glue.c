@@ -399,7 +399,7 @@ void cmd_yaffs_ls(const char *mountpt, int longlist)
 	yaffs_DIR *d;
 	struct yaffs_dirent *de;
 	struct yaffs_stat stat;
-	char tempstr[255];
+	char tempstr[512]; /* SECURITY FIX: Increased buffer size for path safety */
 
 	d = yaffs_opendir(mountpt);
 
@@ -410,7 +410,7 @@ void cmd_yaffs_ls(const char *mountpt, int longlist)
 
 	for (i = 0; (de = yaffs_readdir(d)) != NULL; i++) {
 		if (longlist) {
-			sprintf(tempstr, "%s/%s", mountpt, de->d_name);
+			snprintf(tempstr, sizeof(tempstr), "%s/%s", mountpt, de->d_name); /* SECURITY FIX: Use snprintf */
 			yaffs_lstat(tempstr, &stat);
 			printf("%-25s\t%7ld",
 					de->d_name,

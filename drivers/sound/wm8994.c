@@ -521,7 +521,7 @@ static int wm8994_set_sysclk(struct wm8994_priv *wm8994, int aif_id,
 	int i;
 	int ret = 0;
 
-	wm8994->sysclk[aif_id - 1] = clk_id;
+	if (aif_id > 0 && aif_id <= 2) wm8994->sysclk[aif_id - 1] = clk_id; /* SECURITY FIX: Bounds check */
 
 	switch (clk_id) {
 	case WM8994_SYSCLK_MCLK1:

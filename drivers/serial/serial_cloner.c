@@ -984,7 +984,7 @@ static int local_serial_receive_cmd(char *cmd,int timeout)
 			if(index_cmd == 24)
 				break;
 		}else{
-			if(cmd[index_cmd - 1] == '\n')
+			if((index_cmd > 0 && index_cmd <= 24) ? cmd[index_cmd - 1] : 0 /* SECURITY FIX: Bounds check */ == '\n')
 				break;
 		}
 		if(timeout--  <= 0)

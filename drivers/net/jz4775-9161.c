@@ -321,7 +321,7 @@ static int jz_send(struct eth_device* dev, void *packet, int length)
 	}
 
 	memset(&tx_buff[next_tx * 2048], 0, 2048);
-	memcpy((void *)&tx_buff[next_tx * 2048], packet, length);
+	if (length <= 2048) memcpy((void *)&tx_buff[next_tx * 2048], packet, length); /* SECURITY FIX: Bounds check */
 	flush_dcache_all();
 
     //printf("jz_send\n");

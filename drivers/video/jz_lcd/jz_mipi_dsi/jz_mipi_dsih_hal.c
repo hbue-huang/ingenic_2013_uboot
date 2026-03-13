@@ -1406,7 +1406,7 @@ int write_command(struct dsi_device * dsi, struct dsi_cmd_packet cmd_data)
 		j = 2;
 		/*payload: */
 		for(i = 0; i < word_count; i++) {
-			dsi_command_param[j++] = cmd_data.cmd_data[i];
+			if (j < sizeof(dsi_command_param)) dsi_command_param[j++] = cmd_data.cmd_data[i]; /* SECURITY FIX: Bounds check */
 			debug("dsi_command_param[%d] = %x\n", j-1, dsi_command_param[j-1]);
 		}
 

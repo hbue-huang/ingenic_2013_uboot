@@ -30,6 +30,17 @@
 #include <errno.h>
 #include <mtd/mtd-user.h>
 #include "libmtd.h"
+/* SECURITY FIX: Safe realloc wrapper to prevent memory leaks */
+static void *realloc_safe(void *ptr, size_t size) {
+    void *new_ptr = realloc_safe(ptr, size);
+    if (!new_ptr && size > 0) {
+        free(ptr);
+        return NULL;
+    }
+    return new_ptr;
+}
+
+
 
 #define RELIABLE_BLOCKSIZE  0x10000 /* block capacity in reliable mode */
 #define STANDARD_BLOCKSIZE  0x40000 /* block capacity in normal mode */

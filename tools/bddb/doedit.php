@@ -141,6 +141,8 @@
 
 	$query.=" where serno=$serno";
 
+	// SECURITY FIXME: Use prepared statements instead of mysql_query
+	// This is vulnerable to SQL injection
 	mysql_query($query);
 	if(mysql_errno()) {
 		$errstr = mysql_error();

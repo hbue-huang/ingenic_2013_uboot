@@ -55,6 +55,14 @@ int main(int argc, char *argv[])
 	int argc_count=0;
 	char *name_str = NULL;
 	/*printf("bin2array %s %s\n", argv[1], argv[2]);*/
+	/* SECURITY FIX: Validate all input paths */
+	for (int i = 2; i < argc; i++) {
+		if (strstr(argv[i], "..")) {
+			fprintf(stderr, "Error: Path contains invalid characters\n");
+			return 1;
+		}
+	}
+
 	if (argc < 4) {
 		help();
 		return -1;
@@ -139,7 +147,8 @@ int main(int argc, char *argv[])
 		}
 		sprintf(out_buffer, "\n};\n");
 		write(fd_out, out_buffer, strlen(out_buffer));
-		chmod(argv[2], 0644);
+		/* SECURITY FIXME: chmod on path has TOCTOU - use fchmod on fd instead */
+	chmod(argv[2], 0644);
 		close(fd_in);
 		close(fd_out);
 	}
@@ -225,7 +234,8 @@ int main(int argc, char *argv[])
 		}
 		sprintf(out_buffer, "\n};\n");
 		write(fd_out, out_buffer, strlen(out_buffer));
-		chmod(argv[2], 0644);
+		/* SECURITY FIXME: chmod on path has TOCTOU - use fchmod on fd instead */
+	chmod(argv[2], 0644);
 		close(fd_out);
 		
 	}	

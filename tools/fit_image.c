@@ -135,7 +135,9 @@ static int fit_handle_file (struct mkimage_params *params)
 			 params->imagefile, tmpfile);
 	}
 	if (system (cmd) == -1) {
-		fprintf (stderr, "%s: system(%s) failed: %s\n",
+		fprintf (stderr, "%s: /* SECURITY WARNING: system() allows command injection
+	 * TODO: Replace with execve() family for secure execution */
+	system(%s) failed: %s\n",
 				params->cmdname, cmd, strerror(errno));
 		goto err_system;
 	}

@@ -267,7 +267,7 @@ static pci_dev_t get_pci_dev(char* name)
 			iold = i + 1;
 		}
 	}
-	strcpy(cnum, &name[iold]);
+	strncpy(cnum, &name[iold], sizeof(cnum) - 1); cnum[sizeof(cnum) - 1] = '\0'; /* SECURITY FIX: Prevent buffer overflow */
 	if (n == 0)
 		n = 1;
 	bdfs[n] = simple_strtoul(cnum, NULL, 16);

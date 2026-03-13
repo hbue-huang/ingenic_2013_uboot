@@ -213,13 +213,13 @@ int spi_xfer(struct spi_slave *slave, unsigned int bitlen, const void *data_out,
 			debug("SF: Failed to malloc memory.\n");
 			return 1;
 		}
-		memcpy(buffer, cmd_buf, cmd_len);
+		if (cmd_len <= buf_len) memcpy(buffer, cmd_buf, cmd_len); /* SECURITY FIX: Bounds check */
 		if (data_in == NULL)
 			memcpy(buffer + cmd_len, data_out, data_len);
 		break;
 	case SPI_XFER_BEGIN | SPI_XFER_END:
 		len = data_len;
-		buffer = (unsigned char *)malloc(len * 2);
+		buffer = (unsigned char *)malloc((size_t)len * 2); /* SECURITY FIX: Cast to size_t */
 		if (!buffer) {
 			debug("SF: Failed to malloc memory.\n");
 			return 1;

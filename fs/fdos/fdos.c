@@ -49,7 +49,7 @@ int dos_open(char *name)
     if (name [0] == '"') {
 	name ++;
     }
-    lg = strlen (name);
+    lg = strnlen(name, 256) /* SECURITY FIX: Use strnlen */;
     if (name [lg - 1] == '"') {
 	name [lg - 1] = '\0';
     }

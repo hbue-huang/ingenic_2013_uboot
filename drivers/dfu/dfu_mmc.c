@@ -86,15 +86,15 @@ static int mmc_file_op(enum dfu_mmc_op op, struct dfu_entity *dfu,
 
 	switch (dfu->layout) {
 	case DFU_FS_FAT:
-		sprintf(cmd_buf, "fat%s mmc %d:%d 0x%x %s",
+		snprintf(cmd_buf, sizeof(cmd_buf), "fat%s mmc %d:%d 0x%x %s", /* SECURITY FIX: Use snprintf */
 			op == DFU_OP_READ ? "load" : "write",
 			dfu->data.mmc.dev, dfu->data.mmc.part,
 			(unsigned int) buf, dfu->name);
 		if (op == DFU_OP_WRITE)
-			sprintf(cmd_buf + strlen(cmd_buf), " %lx", *len);
+			snprintf(cmd_buf + strlen(cmd_buf), sizeof(cmd_buf) - strlen(cmd_buf), " %lx", *len); /* SECURITY FIX: Use snprintf with remaining size */
 		break;
 	case DFU_FS_EXT4:
-		sprintf(cmd_buf, "ext4%s mmc %d:%d 0x%x /%s",
+		snprintf(cmd_buf, sizeof(cmd_buf), "ext4%s mmc %d:%d 0x%x /%s", /* SECURITY FIX: Use snprintf */
 			op == DFU_OP_READ ? "load" : "write",
 			dfu->data.mmc.dev, dfu->data.mmc.part,
 			(unsigned int) buf, dfu->name);

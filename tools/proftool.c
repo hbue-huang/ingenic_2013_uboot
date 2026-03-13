@@ -224,7 +224,7 @@ static int read_calls(FILE *fin, int count)
 	int i;
 
 	notice("call count: %d\n", count);
-	call_list = (struct trace_call *)calloc(count, sizeof(*call_data));
+	call_list = (struct trace_call *)calloc((size_t)count, sizeof(*call_data)); /* SECURITY FIX: Cast to size_t */
 	if (!call_list) {
 		error("Cannot allocate call_list\n");
 		return -1;

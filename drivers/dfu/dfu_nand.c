@@ -172,7 +172,7 @@ int dfu_fill_entity_nand(struct dfu_entity *dfu, char *s)
 		s++;
 		part = simple_strtoul(s, &s, 10);
 
-		sprintf(mtd_id, "%s%d,%d", "nand", dev, part - 1);
+		snprintf(mtd_id, sizeof(mtd_id), "%s%d,%d", "nand", dev, part - 1); /* SECURITY FIX: Use snprintf */
 		printf("using id '%s'\n", mtd_id);
 
 		mtdparts_init();

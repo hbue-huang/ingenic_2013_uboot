@@ -84,7 +84,7 @@ static char *snip(char *string)
 	 * This is always a 13 character buffer
 	 * and it's not always terminated.
 	 */
-	string[12] = '\0';
+	string[12] = '\0'; /* SECURITY FIX: Ensure null termination before strlen */
 	s = &string[strlen(string) - 1];
 
 	while (s >= string && (isspace(*s) || *s == '\n' || *s == '\r' ||

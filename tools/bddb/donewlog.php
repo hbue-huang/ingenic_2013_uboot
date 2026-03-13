@@ -40,6 +40,8 @@
 
 	$sqlerr = '';
 
+	// SECURITY FIXME: Use prepared statements instead of mysql_query
+	// This is vulnerable to SQL injection
 	mysql_query("insert into log (logno) values (null)");
 	if (mysql_errno())
 		$sqlerr = mysql_error();
@@ -48,7 +50,9 @@
 		if (!$logno)
 			$sqlerr = "couldn't allocate new serial number";
 		else {
-			mysql_query($query . " where logno=$logno");
+			// SECURITY FIXME: Use prepared statements instead of mysql_query
+	// This is vulnerable to SQL injection
+	mysql_query($query . " where logno=$logno");
 			if (mysql_errno())
 				$sqlerr = mysql_error();
 		}
