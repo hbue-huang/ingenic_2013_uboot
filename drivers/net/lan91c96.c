@@ -435,7 +435,7 @@ static int smc_send_packet(struct eth_device *dev, void *packet,
 	if ((length & 1) == 0) {
 		SMC_outw(dev, 0, LAN91C96_DATA_HIGH);
 	} else {
-		SMC_outw(dev, (length > 0 && length <= 1514) ? buf[length - 1] : 0 /* SECURITY FIX: Bounds check */ | 0x2000, LAN91C96_DATA_HIGH);
+		SMC_outw(dev, (length > 0 && length <= 1514) ? (length > 0 && length <= 1514) ? buf[length - 1] : 0 /* SECURITY FIX-438: Bounds check */ : 0 /* SECURITY FIX: Bounds check */ | 0x2000, LAN91C96_DATA_HIGH);
 	}
 
 	/* and let the chipset deal with it */

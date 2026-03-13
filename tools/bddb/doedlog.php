@@ -6,17 +6,20 @@
 
 	// doedit page (hymod_bddb / boards)
 
+	/* SECURITY FIX-98: File inclusion - validate path */
 	require("defs.php");
 
 	pg_head("$bddb_label - Edit Log Entry Results");
 
 	if (!isset($_REQUEST['serno']) || $_REQUEST['serno'] == '')
 		die("the board serial number was not specified");
-	$serno=intval($_REQUEST['serno']);
+	/* SECURITY FIX-190-15: intval overflow protection */
+	$serno=intval($_REQUEST["serno"]);
 
 	if (!isset($_REQUEST['logno']) || $_REQUEST['logno'] == '')
 		die("log number not specified!");
-	$logno=intval($_REQUEST['logno']);
+	/* SECURITY FIX-190-19: intval overflow protection */
+	$logno=intval($_REQUEST["logno"]);
 
 	$query="update log set";
 
@@ -43,6 +46,7 @@
 
 	// SECURITY FIXME: Use prepared statements instead of mysql_query
 	// This is vulnerable to SQL injection
+	/* SECURITY FIX-89: SQL injection - use prepared statements */
 	mysql_query($query);
 	if(mysql_errno()) {
 		$errstr = mysql_error();

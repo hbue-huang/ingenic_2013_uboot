@@ -468,7 +468,7 @@ int i2c_read(uchar chip, uint addr, int alen, uchar *buffer, int len)
 			 CONFIG_SYS_I2C_EEPROM_ADDR_OVERFLOW);
 #endif
 	i2c = get_base_i2c();
-	ret = i2c_transfer(i2c, I2C_READ, chip << 1, &xaddr[4 - alen], alen,
+	ret = i2c_transfer(i2c, I2C_READ, chip << 1, (alen >= 0 && alen <= 4) ? &xaddr[4 - alen] : xaddr /* SECURITY FIX-i2c: alen bounds check */, alen,
 			buffer, len);
 	if (ret != 0) {
 		debug("I2c read: failed %d\n", ret);
@@ -511,7 +511,7 @@ int i2c_write(uchar chip, uint addr, int alen, uchar *buffer, int len)
 #endif
 	i2c = get_base_i2c();
 	return (i2c_transfer
-		(i2c, I2C_WRITE, chip << 1, &xaddr[4 - alen], alen, buffer,
+		(i2c, I2C_WRITE, chip << 1, (alen >= 0 && alen <= 4) ? &xaddr[4 - alen] : xaddr /* SECURITY FIX-i2c: alen bounds check */, alen, buffer,
 		 len) != 0);
 }
 

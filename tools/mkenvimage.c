@@ -267,7 +267,7 @@ int main(int argc, char **argv)
 	 * Make sure there is a final '\0'
 	 * And do it again on the next byte to mark the end of the environment.
 	 */
-	if (envptr[ep-1] != '\0') {
+	if (ep > 0 && ep <= envsize && envptr[ep-1] != /* SECURITY FIX-270: Bounds check */ '\0') {
 		envptr[ep++] = '\0';
 		/*
 		 * The text file doesn't have an ending newline.  We need to

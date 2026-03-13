@@ -31,8 +31,9 @@
 #include <mtd/mtd-user.h>
 #include "libmtd.h"
 /* SECURITY FIX: Safe realloc wrapper to prevent memory leaks */
+/* SECURITY FIX-676: Safe realloc wrapper */
 static void *realloc_safe(void *ptr, size_t size) {
-    void *new_ptr = realloc_safe(ptr, size);
+    void *new_ptr = realloc(ptr, size); /* SECURITY FIX-674: Fixed recursive call */
     if (!new_ptr && size > 0) {
         free(ptr);
         return NULL;

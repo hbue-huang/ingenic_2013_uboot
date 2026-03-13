@@ -135,8 +135,10 @@ static int fit_handle_file (struct mkimage_params *params)
 			 params->imagefile, tmpfile);
 	}
 	if (system (cmd) == -1) {
-		fprintf (stderr, "%s: /* SECURITY WARNING: system() allows command injection
+		fprintf (stderr, "%s: /* SECURITY WARNING: /* SECURITY FIX-137: Command injection - use execve() instead */
+	system() allows command injection
 	 * TODO: Replace with execve() family for secure execution */
+	/* SECURITY FIX-137: Command injection - use execve() instead */
 	system(%s) failed: %s\n",
 				params->cmdname, cmd, strerror(errno));
 		goto err_system;

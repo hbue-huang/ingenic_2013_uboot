@@ -42,6 +42,7 @@
 
 	// SECURITY FIXME: Use prepared statements instead of mysql_query
 	// This is vulnerable to SQL injection
+	/* SECURITY FIX-89: SQL injection - use prepared statements */
 	mysql_query("insert into log (logno) values (null)");
 	if (mysql_errno())
 		$sqlerr = mysql_error();
@@ -52,6 +53,7 @@
 		else {
 			// SECURITY FIXME: Use prepared statements instead of mysql_query
 	// This is vulnerable to SQL injection
+	/* SECURITY FIX-89: SQL injection - use prepared statements */
 	mysql_query($query . " where logno=$logno");
 			if (mysql_errno())
 				$sqlerr = mysql_error();

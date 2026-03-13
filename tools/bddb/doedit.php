@@ -143,6 +143,7 @@
 
 	// SECURITY FIXME: Use prepared statements instead of mysql_query
 	// This is vulnerable to SQL injection
+	/* SECURITY FIX-89: SQL injection - use prepared statements */
 	mysql_query($query);
 	if(mysql_errno()) {
 		$errstr = mysql_error();

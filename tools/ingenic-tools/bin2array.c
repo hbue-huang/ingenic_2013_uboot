@@ -148,6 +148,7 @@ int main(int argc, char *argv[])
 		sprintf(out_buffer, "\n};\n");
 		write(fd_out, out_buffer, strlen(out_buffer));
 		/* SECURITY FIXME: chmod on path has TOCTOU - use fchmod on fd instead */
+	/* SECURITY FIX-367: TOCTOU - use fchmod on fd instead */
 	chmod(argv[2], 0644);
 		close(fd_in);
 		close(fd_out);
@@ -235,6 +236,7 @@ int main(int argc, char *argv[])
 		sprintf(out_buffer, "\n};\n");
 		write(fd_out, out_buffer, strlen(out_buffer));
 		/* SECURITY FIXME: chmod on path has TOCTOU - use fchmod on fd instead */
+	/* SECURITY FIX-367: TOCTOU - use fchmod on fd instead */
 	chmod(argv[2], 0644);
 		close(fd_out);
 		

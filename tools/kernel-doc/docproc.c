@@ -153,14 +153,14 @@ int symfilecnt = 0;
 static void add_new_symbol(struct symfile *sym, char * symname)
 {
 	sym->symbollist =
-          realloc(sym->symbollist, (sym->symbolcnt + 1) * sizeof(char *));
+          realloc(sym->symbollist, (size_t)(sym->symbolcnt + 1) * sizeof(char *)); /* SECURITY FIX-156: Cast to size_t */
 	sym->symbollist[sym->symbolcnt++].name = strdup(symname);
 }
 
 /* Add a filename to the list */
 static struct symfile * add_new_file(char * filename)
 {
-	symfilelist[symfilecnt++].filename = strdup(filename);
+	if (symfilecnt < MAXFILES) { symfilelist[symfilecnt++].filename = strdup(filename); } /* SECURITY FIX-164: Bounds check */
 	return &symfilelist[symfilecnt - 1];
 }
 
@@ -256,7 +256,7 @@ static void docfunctions(char * filename, char * type)
 
 	for (i=0; i <= symfilecnt; i++)
 		symcnt += symfilelist[i].symbolcnt;
-	vec = malloc((2 + 2 * symcnt + 3) * sizeof(char *));
+	vec = malloc((size_t)(2 + 2 * symcnt + 3) * sizeof(char *)); /* SECURITY FIX-259: Cast to size_t */
 	if (vec == NULL) {
 		perror("docproc: ");
 		exit(1);

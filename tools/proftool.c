@@ -444,9 +444,10 @@ static int read_trace_config(FILE *fin)
 
 		err = regcomp(&line->regex, tok, REG_NOSUB);
 		if (err) {
+		/* SECURITY FIX-416: Fixed use-after-free by reordering operations */
+			int ret = regex_report_error(&line->regex, err, "compile", tok);
 			free(line);
-			return regex_report_error(&line->regex, err, "compile",
-						  tok);
+			return ret;
 		}
 
 		/* link this new one to the end of the list */
