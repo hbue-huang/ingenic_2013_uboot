@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 		write(fd_out, out_buffer, strlen(out_buffer));
 		/* SECURITY FIXME: chmod on path has TOCTOU - use fchmod on fd instead */
 	/* SECURITY FIX-367: TOCTOU - use fchmod on fd instead */
-	chmod(argv[2], 0644);
+	fchmod(fd_out, 0644);  /* SECURITY: Use fchmod instead of chmod */
 		close(fd_in);
 		close(fd_out);
 	}
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
 		write(fd_out, out_buffer, strlen(out_buffer));
 		/* SECURITY FIXME: chmod on path has TOCTOU - use fchmod on fd instead */
 	/* SECURITY FIX-367: TOCTOU - use fchmod on fd instead */
-	chmod(argv[2], 0644);
+	fchmod(fd_out, 0644);  /* SECURITY: Use fchmod instead of chmod */
 		close(fd_out);
 		
 	}	

@@ -93,6 +93,7 @@ main(int ac, char **av)
     if (verbose)
 	fprintf(stderr, "Opening file and reading image...\n");
 
+	if (strstr(ifn, "..") != NULL) exit(1);
     if ((ifd = open(ifn, O_RDONLY)) < 0)
 	Perror("can't open kernel image file '%s'", ifn);
 

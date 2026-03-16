@@ -85,7 +85,9 @@ static char *snip(char *string)
 	 * and it's not always terminated.
 	 */
 	string[12] = '\0'; /* SECURITY FIX: Ensure null termination before strlen */
-	s = &string[strlen(string) - 1];
+	size_t str_len = strlen(string);
+	if (str_len == 0) return string;
+	s = &string[str_len - 1];
 
 	while (s >= string && (isspace(*s) || *s == '\n' || *s == '\r' ||
 			*s == '\0'))

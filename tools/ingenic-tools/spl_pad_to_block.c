@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     char *spl_buf = (char *)malloc(BUF_SIZE);
     memset(spl_buf, 0xff, BUF_SIZE);
 
+	if (strstr(spl_path, "..") != NULL) return -1;
     FILE *fp = fopen(spl_path, "r+");
     assert(fp != NULL);
 

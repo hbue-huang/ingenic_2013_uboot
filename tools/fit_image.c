@@ -134,6 +134,7 @@ static int fit_handle_file (struct mkimage_params *params)
 		snprintf(cmd, sizeof(cmd), "cp %s %s",
 			 params->imagefile, tmpfile);
 	}
+	/* SECURITY: system() is dangerous - consider using execve() */
 	if (system (cmd) == -1) {
 		fprintf (stderr, "%s: system(%s) failed: %s\n",
 				params->cmdname, cmd, strerror(errno));

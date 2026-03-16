@@ -148,7 +148,7 @@ int do_bootvx(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	unsigned long bootaddr;	/* Address to put the bootline */
 	char *bootline;			/* Text of the bootline        */
 	char *tmp;			/* Temporary char pointer      */
-	char build_buf[128]; /* SECURITY FIX-151: Ensure bootline fits */		/* Buffer for building the bootline */
+	char build_buf[256];  /* SECURITY: Increased buffer size */ /* SECURITY FIX-151: Ensure bootline fits */		/* Buffer for building the bootline */
 
 	/* ---------------------------------------------------
 	 *

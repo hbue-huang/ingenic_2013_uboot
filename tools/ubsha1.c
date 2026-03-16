@@ -47,6 +47,7 @@ int main (int argc, char **argv)
 
 	if (argc > 1) {
 		imagefile = argv[1];
+		if (strstr(imagefile, "..") != NULL) { exit(1); }
 		ifd = open (imagefile, O_RDWR|O_BINARY);
 		if (ifd < 0) {
 			fprintf (stderr, "%s: Can't open %s: %s\n",

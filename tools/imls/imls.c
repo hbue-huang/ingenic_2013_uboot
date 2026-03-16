@@ -100,6 +100,7 @@ NXTARG:		;
 
 	devicefile = *argv;
 
+	if (strstr(devicefile, "..") != NULL) { exit(1); }
 	fd = open(devicefile, O_RDONLY);
 	if (fd < 0) {
 		fprintf (stderr, "%s: Can't open %s: %s\n",

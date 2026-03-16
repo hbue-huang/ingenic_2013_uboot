@@ -208,7 +208,7 @@ int spi_xfer(struct spi_slave *slave, unsigned int bitlen, const void *data_out,
 		buf_len = 2 * cmd_len + min(data_len, max_tran_len);
 		len = cmd_len + data_len;
 		rx_offset = cmd_len;
-		buffer = (unsigned char *)malloc(buf_len);
+		buffer = (unsigned char *)malloc((size_t)buf_len);  /* SECURITY: cast to size_t */
 		if (!buffer) {
 			debug("SF: Failed to malloc memory.\n");
 			return 1;

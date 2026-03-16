@@ -263,7 +263,8 @@ static pci_dev_t get_pci_dev(char* name)
 		if (name[i] == '.') {
 			memcpy(cnum, &name[iold], i - iold);
 			cnum[i - iold] = '\0';
-			bdfs[n++] = simple_strtoul(cnum, NULL, 16);
+			if (n >= 3) return -1;  /* SECURITY: bounds check */
+		bdfs[n++] = simple_strtoul(cnum, NULL, 16);
 			iold = i + 1;
 		}
 	}

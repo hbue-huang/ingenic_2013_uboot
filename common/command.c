@@ -377,12 +377,14 @@ int cmd_auto_complete(const char *const prompt, char *buf, int *np, int *colp)
 	seplen = 0;
 	if (i == 1) { /* one match; perfect */
 		k = strlen(argv[argc - 1]);
+		if (k > strlen(cmdv[0])) return 1;  /* SECURITY: bounds check */
 		s = cmdv[0] + k;
 		len = strlen(s);
 		sep = " ";
 		seplen = 1;
 	} else if (i > 1 && (j = find_common_prefix(cmdv)) != 0) {	/* more */
 		k = strlen(argv[argc - 1]);
+		if (k > strlen(cmdv[0])) return 1;  /* SECURITY: bounds check */
 		j -= k;
 		if (j > 0) {
 			s = cmdv[0] + k;

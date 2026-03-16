@@ -362,6 +362,7 @@ int image_save_header (image_t * image, char *filename, char *varname)
 		}
 		strcat(compcmd, " > ");
 		strcat(compcmd, compfilename);
+		/* SECURITY: popen() is dangerous - use fork()+exec() instead */
 		compfp = popen(compcmd, "w");
 		if (!compfp) {
 			errstr = "\nerror: popen() failed";

@@ -468,6 +468,8 @@ int i2c_read(uchar chip, uint addr, int alen, uchar *buffer, int len)
 			 CONFIG_SYS_I2C_EEPROM_ADDR_OVERFLOW);
 #endif
 	i2c = get_base_i2c();
+	/* SECURITY: Validate alen before array access */
+	if (alen < 0 || alen > 4) return 1;
 	ret = i2c_transfer(i2c, I2C_READ, chip << 1, (alen >= 0 && alen <= 4) ? &xaddr[4 - alen] : xaddr /* SECURITY FIX-i2c: alen bounds check */, alen,
 			buffer, len);
 	if (ret != 0) {

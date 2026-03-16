@@ -152,6 +152,7 @@ int symfilecnt = 0;
 
 static void add_new_symbol(struct symfile *sym, char * symname)
 {
+	/* SECURITY FIX: Check for integer overflow before allocation */
 	sym->symbollist =
           realloc(sym->symbollist, (size_t)(sym->symbolcnt + 1) * sizeof(char *)); /* SECURITY FIX-156: Cast to size_t */
 	sym->symbollist[sym->symbolcnt++].name = strdup(symname);

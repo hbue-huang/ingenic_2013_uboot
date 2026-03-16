@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	if (strstr(argv[1], "..") != NULL) return 1;
 	fd = open(argv[1], O_RDWR);
 	if (fd < 0) {
 		printf("Open %s Error\n", argv[1]);
@@ -165,6 +166,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	if (strstr(argv[1], "..") != NULL) return 1;
 	fd = open(argv[1], O_RDWR);
 	if (fd < 0) {
 		printf("Open %s Error\n", argv[1]);
