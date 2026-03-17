@@ -20,6 +20,35 @@
 #define BUF_SIZE (200 * 1024 * sizeof(char))
 #define BLOCK_SIZE 64
 
+/**
+ * SECURITY VALIDATION FUNCTION
+ * CWE-22: Path Traversal Prevention
+ * Validates that the file path does not contain dangerous characters
+ * that could lead to directory traversal or command injection.
+ */
+static int validate_path(const char *path)
+{
+    /* Check for directory traversal patterns */
+    if (strstr(path, "..") != NULL) {
+				fprintf(stderr, "SECURITY ERROR: Path contains directory traversal (..)\n");
+				return 0;
+    }
+
+    /* Check for shell metacharacters that could enable command injection */
+    if (strchr(path, ';') != NULL ||
+				strchr(path, '|') != NULL ||
+				strchr(path, '&') != NULL ||
+				strchr(path, '`') != NULL ||
+				strchr(path, '$') != NULL ||
+				strchr(path, '(') != NULL ||
+				strchr(path, ')') != NULL) {
+				fprintf(stderr, "SECURITY ERROR: Path contains shell metacharacters\n");
+				return 0;
+    }
+
+    return 1;
+}
+
 /* 当spl len不够一个block时候，补齐0，使足够block整除 */
 static int change_spl_len(int len)
 {
@@ -42,15 +71,23 @@ int main(int argc, char *argv[])
     char *spl_buf = (char *)malloc(BUF_SIZE);
     memset(spl_buf, 0xff, BUF_SIZE);
 
-		if (strstr(spl_path, "..") != NULL ||
-				strchr(spl_path, ';') != NULL ||
-				strchr(spl_path, '|') != NULL ||
-				strchr(spl_path, '&') != NULL) {
-				printf("Invalid path (special characters detected)\n");
+		/*
+    * SECURITY FIX - CWE-22: Path Traversal Prevention
+    * Validate the path before using it to prevent directory traversal attacks.
+    * This ensures the path does not contain dangerous characters like ".."
+    * that could allow access to files outside the intended directory.
+    */
+    if (!validate_path(spl_path)) {
+				fprintf(stderr, "SECURITY: Path validation failed for: %s\n", spl_path);
 				free(spl_buf);
 				return -1;
     }
 
+		/*
+    * SECURITY FIX - CWE-476: NULL Pointer Dereference Prevention
+    * Use explicit error checking instead of assert() which is removed in release builds.
+    * Verify that fopen succeeded before proceeding.
+    */
 		FILE *fp = fopen(spl_path, "r+");
 		if (!fp) {
 				printf("Failed to open %s\n", spl_path);

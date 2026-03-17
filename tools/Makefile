@@ -91,7 +91,7 @@ OBJ_FILES-$(CONFIG_VIDEO_LOGO) += bmp_logo.o
 NOPED_OBJ_FILES-y += default_image.o
 NOPED_OBJ_FILES-y += proftool.o
 OBJ_FILES-$(CONFIG_BUILD_ENVCRC) += envcrc.o
-NOPED_OBJ_FILES-y += fit_image.o
+#NOPED_OBJ_FILES-y += fit_image.o
 OBJ_FILES-$(CONFIG_CMD_NET) += gen_eth_addr.o
 OBJ_FILES-$(CONFIG_CMD_LOADS) += img2srec.o
 OBJ_FILES-$(CONFIG_XWAY_SWAP_BYTES) += xway-swap-bytes.o
@@ -233,7 +233,6 @@ $(obj)mkenvimage$(SFX):	$(obj)crc32.o $(obj)mkenvimage.o \
 $(obj)mkimage$(SFX):	$(obj)aisimage.o \
 			$(obj)crc32.o \
 			$(obj)default_image.o \
-			$(obj)fit_image.o \
 			$(obj)image-fit.o \
 			$(obj)image.o \
 			$(obj)image-host.o \

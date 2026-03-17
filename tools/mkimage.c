@@ -158,7 +158,7 @@ main (int argc, char **argv)
 	/* Init Freescale imx Boot image generation/list support */
 	init_imx_image_type ();
 	/* Init FIT image generation/list support */
-	init_fit_image_type ();
+	/* init_fit_image_type (); */
 	/* Init TI OMAP Boot image generation/list support */
 	init_omap_image_type();
 	/* Init Default image generation/list support */

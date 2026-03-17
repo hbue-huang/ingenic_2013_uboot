@@ -848,13 +848,13 @@ $(TIMESTAMP_FILE):
 		@LC_ALL=C date +'#define U_BOOT_TIME "%T"' >> $@.tmp
 		@cmp -s $@ $@.tmp && rm -f $@.tmp || mv -f $@.tmp $@
 
-easylogo env:
+env:
 	$(MAKE) -C tools/$@ all MTD_VERSION=${MTD_VERSION}
 
 #xmldocs pdfdocs psdocs htmldocs mandocs: tools/kernel-doc/docproc
 #	$(MAKE) U_BOOT_VERSION=$(U_BOOT_VERSION) -C doc/DocBook/ $@
 
-tools-all: easylogo env $(VERSION_FILE) $(TIMESTAMP_FILE)
+tools-all: env $(VERSION_FILE) $(TIMESTAMP_FILE)
 	$(MAKE) -C tools HOST_TOOLS_ALL=y
 
 .PHONY : CHANGELOG
@@ -899,7 +899,7 @@ clean:
 	       $(obj)examples/standalone/test_burst			  \
 	       $(obj)examples/standalone/timer
 	@rm -f $(obj)examples/api/demo{,.bin}
-	@rm -f $(obj)tools/bmp_logo	   $(obj)tools/easylogo/easylogo  \
+	@rm -f $(obj)tools/bmp_logo	    \
 	       $(obj)tools/env/{fw_printenv,fw_setenv}			  \
 	       $(obj)tools/envcrc					  \
 	       $(obj)tools/gen_eth_addr    $(obj)tools/img2srec		  \
