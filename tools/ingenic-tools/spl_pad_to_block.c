@@ -16,9 +16,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <limits.h>
 
 #define BUF_SIZE (200 * 1024 * sizeof(char))
 #define BLOCK_SIZE 64
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 
 /**
  * SECURITY VALIDATION FUNCTION
@@ -28,22 +33,35 @@
  */
 static int validate_path(const char *path)
 {
-    /* Check for directory traversal patterns */
-    if (strstr(path, "..") != NULL) {
-				fprintf(stderr, "SECURITY ERROR: Path contains directory traversal (..)\n");
-				return 0;
+    char resolved_path[PATH_MAX];
+    char *real_path;
+    const char *allowed_prefix = "/home/ghuang/enzhi/uboot_2013";
+
+    /* Get canonical absolute path */
+    real_path = realpath(path, resolved_path);
+    if (!real_path) {
+        fprintf(stderr, "SECURITY ERROR: Cannot resolve path\n");
+        return 0;
     }
 
-    /* Check for shell metacharacters that could enable command injection */
-    if (strchr(path, ';') != NULL ||
-				strchr(path, '|') != NULL ||
-				strchr(path, '&') != NULL ||
-				strchr(path, '`') != NULL ||
-				strchr(path, '$') != NULL ||
-				strchr(path, '(') != NULL ||
-				strchr(path, ')') != NULL) {
-				fprintf(stderr, "SECURITY ERROR: Path contains shell metacharacters\n");
-				return 0;
+    /* Check resolved path is within allowed directory */
+    if (strncmp(real_path, allowed_prefix, strlen(allowed_prefix)) != 0) {
+        fprintf(stderr, "SECURITY ERROR: Path outside allowed directory: %s\n", real_path);
+        return 0;
+    }
+
+    /* Original checks */
+    if (strstr(path, "..") != NULL) {
+        fprintf(stderr, "SECURITY ERROR: Path contains directory traversal (..)\n");
+        return 0;
+    }
+
+    if (strchr(path, ';') != NULL || strchr(path, '|') != NULL ||
+        strchr(path, '&') != NULL || strchr(path, '`') != NULL ||
+        strchr(path, '$') != NULL || strchr(path, '(') != NULL ||
+        strchr(path, ')') != NULL) {
+        fprintf(stderr, "SECURITY ERROR: Path contains shell metacharacters\n");
+        return 0;
     }
 
     return 1;
