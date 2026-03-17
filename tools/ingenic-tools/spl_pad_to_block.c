@@ -42,14 +42,16 @@ int main(int argc, char *argv[])
     char *spl_buf = (char *)malloc(BUF_SIZE);
     memset(spl_buf, 0xff, BUF_SIZE);
 
-		if (strstr(spl_path, "..") != NULL || strchr(spl_path, ';') != NULL || strchr(spl_path, '|') != NULL || strchr(spl_path, '&') != NULL) {
+		if (strstr(spl_path, "..") != NULL ||
+				strchr(spl_path, ';') != NULL ||
+				strchr(spl_path, '|') != NULL ||
+				strchr(spl_path, '&') != NULL) {
 				printf("Invalid path (special characters detected)\n");
 				free(spl_buf);
 				return -1;
-		}
-    
+    }
+
 		FILE *fp = fopen(spl_path, "r+");
-    assert(fp != NULL);
 		if (!fp) {
 				printf("Failed to open %s\n", spl_path);
 				free(spl_buf);

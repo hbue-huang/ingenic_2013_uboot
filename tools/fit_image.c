@@ -89,6 +89,17 @@ int mmap_fdt(struct mkimage_params *params, const char *fname, void **blobp,
 	return fd;
 }
 
+static int validate_cmd_safe(const char *cmd)
+{
+    const char *dangerous = ";|&`$(){}[]\"<>\n\r";
+    const char *p;
+    for (p = dangerous; *p; p++) {
+				if (strchr(cmd, *p))
+				return 0;
+    }
+    return 1;
+}
+
 /**
  * fit_handle_file - main FIT file processing function
  *
@@ -135,16 +146,11 @@ static int fit_handle_file (struct mkimage_params *params)
 			 params->imagefile, tmpfile);
 	}
 
-	{
-		const char *dangerous = ";&|`$\\(";
-		const char *p;
-		for (p = dangerous; *p; p++) {
-			if (strchr(cmd, *p)) {
-				fprintf(stderr, "%s: Dangerous character in command\n", params->cmdname);
-				goto err_system;
-			}
-		}
+	if (!validate_cmd_safe(cmd)) {
+    fprintf(stderr, "%s: Command contains unsafe characters\n", params->cmdname);
+    goto err_system;
 	}
+
 	/* SECURITY: system() is dangerous - consider using execve() */
 	if (system (cmd) == -1) {
 		fprintf (stderr, "%s: system(%s) failed: %s\n",

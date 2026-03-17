@@ -145,7 +145,8 @@ static int read_system_map(FILE *fin)
 
 		if (func_count == alloced) {
 			alloced += 256;
-			//func_list = realloc(func_list, sizeof(struct func_info) * alloced);
+			if (alloced > SIZE_MAX / sizeof(struct func_info))
+					return -1;			
 			void *tmp_ptr = realloc(func_list, sizeof(struct func_info) * alloced);
 			if (!tmp_ptr) {
 					error("Memory allocation failed\n");
@@ -223,12 +224,21 @@ static struct func_info *find_caller_by_offset(uint32_t offset)
 	return low >= 0 ? &func_list[low] : NULL;
 }
 
+static inline int check_mul_overflow(size_t a, size_t b)
+{
+    return a && b && (a > SIZE_MAX / b);
+}
+
 static int read_calls(FILE *fin, int count)
 {
 	struct trace_call *call_data;
 	int i;
 
 	notice("call count: %d\n", count);
+	if (count < 0 || check_mul_overflow((size_t)count, sizeof(*call_data))) {
+    error("Integer overflow in allocation\n");
+    return -1;
+	}
 	call_list = (struct trace_call *)calloc((size_t)count, sizeof(*call_data)); /* SECURITY FIX: Cast to size_t */
 	if (!call_list) {
 		error("Cannot allocate call_list\n");

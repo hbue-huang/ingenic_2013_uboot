@@ -16,6 +16,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #pragma pack(1)
 
@@ -313,6 +315,58 @@ enum comp_t {
 static enum comp_t compression = COMP_NONE;
 static bool bss_storage = false;
 
+static FILE *safe_popen_write(const char *filename, pid_t *child_pid)
+{
+    int pipefd[2];
+    pid_t pid;
+    FILE *fp;
+
+    if (pipe(pipefd) == -1)
+        return NULL;
+
+    pid = fork();
+    if (pid < 0) {
+        close(pipefd[0]);
+        close(pipefd[1]);
+        return NULL;
+    }
+
+    if (pid == 0) {
+        /* Child process: redirect stdin to pipe and write to file */
+        close(pipefd[1]);
+        dup2(pipefd[0], STDIN_FILENO);
+        close(pipefd[0]);
+
+        /* Open output file */
+        int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd < 0)
+            _exit(127);
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+
+        /* Execute cat to copy stdin to stdout (file) */
+        execlp("cat", "cat", NULL);
+        _exit(127);
+    }
+
+    /* Parent process */
+    close(pipefd[0]);
+    *child_pid = pid;
+    fp = fdopen(pipefd[1], "w");
+    if (!fp)
+        close(pipefd[1]);
+    return fp;
+}
+
+static int safe_pclose(FILE *fp, pid_t pid)
+{
+    int status;
+    fclose(fp);
+    if (waitpid(pid, &status, 0) < 0)
+        return -1;
+    return WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+}
+
 int image_save_header (image_t * image, char *filename, char *varname)
 {
 	FILE *file = fopen (filename, "w");
@@ -363,7 +417,8 @@ int image_save_header (image_t * image, char *filename, char *varname)
 		strcat(compcmd, " > ");
 		strcat(compcmd, compfilename);
 		/* SECURITY: popen() is dangerous - use fork()+exec() instead */
-		compfp = popen(compcmd, "w");
+		pid_t comp_pid;
+		compfp = safe_popen_write(compfilename, &comp_pid);
 		if (!compfp) {
 			errstr = "\nerror: popen() failed";
 			goto done;
@@ -372,7 +427,7 @@ int image_save_header (image_t * image, char *filename, char *varname)
 			errstr = "\nerror: writing data to gzip failed";
 			goto done;
 		}
-		if (pclose(compfp)) {
+		if (safe_pclose(compfp, comp_pid) == -1) {
 			errstr = "\nerror: gzip process failed";
 			goto done;
 		}
