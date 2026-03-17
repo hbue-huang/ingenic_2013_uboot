@@ -308,7 +308,8 @@ void nv_map_area(unsigned int *base_addr, unsigned int nv_addr, unsigned int nv_
 	memset(buf, 0, sizeof(buf));
 
 	if(nv_num > 6) {
-		while(1) { /* SECURITY FIXME: Infinite loop - add timeout or watchdog reset */ }
+		printf("Error: nv_num (%u) exceeds maximum (6)\n", nv_num);
+		nv_num = 6;  /* Limit to valid range */
 	}
 
 	for(i = 0; i < nv_num; i++) {

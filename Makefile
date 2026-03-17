@@ -267,7 +267,6 @@ LIBS-y += fs/libfs.o \
 	fs/cramfs/libcramfs.o \
 	fs/ext4/libext4fs.o \
 	fs/fat/libfat.o \
-	fs/fdos/libfdos.o \
 	fs/jffs2/libjffs2.o \
 	fs/reiserfs/libreiserfs.o \
 	fs/sandbox/libsandboxfs.o \
@@ -309,7 +308,7 @@ LIBS-y += drivers/power/libpower.o \
 	drivers/power/battery/libbattery.o
 LIBS-y += drivers/regulator/libregulator.o
 LIBS-y += drivers/spi/libspi.o
-LIBS-y += drivers/dfu/libdfu.o
+#LIBS-y += drivers/dfu/libdfu.o
 ifeq ($(CPU),mpc83xx)
 LIBS-y += drivers/qe/libqe.o
 LIBS-y += arch/powerpc/cpu/mpc8xxx/ddr/libddr.o
@@ -849,14 +848,13 @@ $(TIMESTAMP_FILE):
 		@LC_ALL=C date +'#define U_BOOT_TIME "%T"' >> $@.tmp
 		@cmp -s $@ $@.tmp && rm -f $@.tmp || mv -f $@.tmp $@
 
-easylogo env gdb:
+easylogo env:
 	$(MAKE) -C tools/$@ all MTD_VERSION=${MTD_VERSION}
-gdbtools: gdb
 
-xmldocs pdfdocs psdocs htmldocs mandocs: tools/kernel-doc/docproc
-	$(MAKE) U_BOOT_VERSION=$(U_BOOT_VERSION) -C doc/DocBook/ $@
+#xmldocs pdfdocs psdocs htmldocs mandocs: tools/kernel-doc/docproc
+#	$(MAKE) U_BOOT_VERSION=$(U_BOOT_VERSION) -C doc/DocBook/ $@
 
-tools-all: easylogo env gdb $(VERSION_FILE) $(TIMESTAMP_FILE)
+tools-all: easylogo env $(VERSION_FILE) $(TIMESTAMP_FILE)
 	$(MAKE) -C tools HOST_TOOLS_ALL=y
 
 .PHONY : CHANGELOG
@@ -904,13 +902,11 @@ clean:
 	@rm -f $(obj)tools/bmp_logo	   $(obj)tools/easylogo/easylogo  \
 	       $(obj)tools/env/{fw_printenv,fw_setenv}			  \
 	       $(obj)tools/envcrc					  \
-	       $(obj)tools/gdb/{astest,gdbcont,gdbsend}			  \
 	       $(obj)tools/gen_eth_addr    $(obj)tools/img2srec		  \
 	       $(obj)tools/mk{env,}image   $(obj)tools/mpc86x_clk	  \
 	       $(obj)tools/mk{smdk5250,}spl				  \
 	       $(obj)tools/mxsboot					  \
 	       $(obj)tools/ncb		   $(obj)tools/ubsha1		  \
-	       $(obj)tools/kernel-doc/docproc				  \
 	       $(obj)tools/proftool
 	@rm -f $(obj)board/cray/L1/{bootscript.c,bootscript.image}	  \
 	       $(obj)board/matrix_vision/*/bootscript.img		  \

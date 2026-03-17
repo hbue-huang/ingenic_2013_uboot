@@ -153,7 +153,7 @@ u8 crc7(u8 crc, char *buffer, int len)
 	return crc;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
 	int fd, count;
 	int bytes_read;
@@ -166,7 +166,11 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	if (strstr(argv[1], "..") != NULL) return 1;
+	if (strstr(argv[1], "..") != NULL) {
+		printf("Invalid path (path traversal detected)\n");
+		return 1;
+	}
+
 	fd = open(argv[1], O_RDWR);
 	if (fd < 0) {
 		printf("Open %s Error\n", argv[1]);

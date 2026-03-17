@@ -145,8 +145,13 @@ static int read_system_map(FILE *fin)
 
 		if (func_count == alloced) {
 			alloced += 256;
-			func_list = realloc(func_list,
-					sizeof(struct func_info) * alloced);
+			//func_list = realloc(func_list, sizeof(struct func_info) * alloced);
+			void *tmp_ptr = realloc(func_list, sizeof(struct func_info) * alloced);
+			if (!tmp_ptr) {
+					error("Memory allocation failed\n");
+					return 1;
+			}
+			func_list = tmp_ptr;
 			assert(func_list);
 		}
 		if (!func_count)

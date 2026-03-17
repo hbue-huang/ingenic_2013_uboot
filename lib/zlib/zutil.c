@@ -49,10 +49,19 @@ extern voidp    calloc OF((uInt items, uInt size));
 extern void     free   OF((voidpf ptr));
 #endif
 
+static int check_overflow(unsigned a, unsigned b)
+{
+	return a && b && (unsigned long)a > (unsigned long)(-1) / b;
+}
+
 voidpf zcalloc(voidpf opaque, unsigned items, unsigned size)
 {
 	if (opaque)
 		items += size - size; /* make compiler happy */
+
+	if (check_overflow(items, size))
+			return Z_NULL;
+				
 	return sizeof(uInt) > 2 ? (voidpf)malloc((size_t)items * size) : /* SECURITY FIX: Cast to size_t */
 		(voidpf)calloc((size_t)items, size);
 }

@@ -134,6 +134,17 @@ static int fit_handle_file (struct mkimage_params *params)
 		snprintf(cmd, sizeof(cmd), "cp %s %s",
 			 params->imagefile, tmpfile);
 	}
+
+	{
+		const char *dangerous = ";&|`$\\(";
+		const char *p;
+		for (p = dangerous; *p; p++) {
+			if (strchr(cmd, *p)) {
+				fprintf(stderr, "%s: Dangerous character in command\n", params->cmdname);
+				goto err_system;
+			}
+		}
+	}
 	/* SECURITY: system() is dangerous - consider using execve() */
 	if (system (cmd) == -1) {
 		fprintf (stderr, "%s: system(%s) failed: %s\n",
